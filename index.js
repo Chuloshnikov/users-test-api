@@ -1,10 +1,13 @@
 import express from "express";
-import cors from "cors";
+
 import cookieParser from "cookie-parser";
 import { PORT } from "./config/env.js";
 
+import { connectDB } from "./database/mongodb.js";
+import userRoutes from "./routes/users.route.js";
 
-const port = process.env.PORT || 8080;
+
+const port = PORT || 8080;
 const app = express();
 
 app.use(express.json());           
@@ -14,6 +17,10 @@ app.get('/', (req, res) => {
 });
 app.use(cookieParser());
 
-app.listen(port, () => {
+//Routes
+app.use("/api/v1/users", userRoutes);
+
+app.listen(port, async () => {
     console.log(`Server started on http://localhost:${port}`);
+    await connectDB();
 });
